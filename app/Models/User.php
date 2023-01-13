@@ -39,6 +39,6 @@ class User extends Authenticatable
     ];
     
     public function pesanan(){
-        return $this->hasMany('App\Models\pesanan','user_id','id');
+        return $this->hasMany('App\Models\Pesanan','user_id','id');
     }
 }

@@ -42,12 +42,23 @@
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->
                         <li class="nav-item">
-                            <?php
-                            $pesanan_utama = \App\Models\Pesanan::where('user_id', Auth::user()->id)->where ('status',0)->first();
-                            $notif = \App\Models\PesananDetail::where('pesanan_id', $pesanan_utama->id)->count();
-                            ?>
-                            <a class="nav-link" href="{{ url('check-out') }}"><i class="fa fa-shopping-cart"></i><span class="badge bg-danger">{{ $notif }}</span></a>
-                        </li>
+                                <?php
+                                 $pesanan_utama = \App\Models\Pesanan::where('user_id', Auth::id())->where('status',0)->first();
+                                 if(!empty($pesanan_utama))
+                                    {
+                                     $notif = \App\Models\PesananDetail::where('pesanan_id', $pesanan_utama->id)->count(); 
+                                    }
+                                ?>
+                                {{-- @php
+                                    DB::table('pesanan')->where(['user_id','=', Auth::user()->id])->get();
+                                @endphp --}}
+                                <a class="nav-link" href="{{ url('check-out') }}">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    @if(!empty($notif))
+                                    <span class="badge bg-danger">{{ $notif }}</span>
+                                    @endif
+                                </a>
+                            </li>
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Barang;
 use App\Models\Pesanan;
+use App\Models\User;
 use App\Models\PesananDetail;
 use Auth;
 use Alert;
@@ -76,6 +77,49 @@ class PesanController extends Controller
         $pesanan->update();
 
         alert()->success('Pesanan Sukses Masuk Keranjang', 'Success');
-        return redirect ('home');
+        return redirect ('check-out');
+    }
+
+    public function check_out()
+    {
+        $pesanan = Pesanan::where('user_id', Auth::user()->id)->where('status',0)->first();
+ 	    $pesanan_details = [];
+        if(!empty($pesanan))
+        {
+            $pesanan_details = PesananDetail::where('pesanan_id', $pesanan->id)->get();
+
+        }
+        
+        return view('check-out', compact('pesanan', 'pesanan_details'));
+    }
+
+    public function delete($id) 
+    {
+        $pesanan_detail = PesananDetail::where('id', $id)->first(); 
+        $pesanan = Pesanan::where('id', $pesanan_detail->pesanan_id)->first();
+        $pesanan->jumlah_harga = $pesanan->jumlah_harga-$pesanan_detail->jumlah_harga;
+        $pesanan->update();
+
+        $pesanan_detail->delete();
+        alert()->Error('Pesanan Sukses Dihapus', 'Hapus');
+        return redirect ('check-out');
+    }
+
+    public function konfirmasi()
+    {
+        $pesanan = Pesanan::where('user_id', Auth::user()->id)->where('status',0)->first();
+        $pesanan_id = $pesanan->id;
+        $pesanan->status = 1;
+        $pesanan->update();
+
+        $pesanan_details = PesananDetail::where('pesanan_id', $pesanan_id)->get();
+        foreach ($pesanan_details as $pesanan_detail) {
+            $barang = Barang::where('id', $pesanan_detail->barang_id)->first();
+            $barang->stok = $barang->stok-$pesanan_detail->jumlah;
+            $barang->update();
+        }
+
+        alert()->success('Pesanan Sukses Check Out', 'Success');
+        return redirect ('check-out');
     }
 }

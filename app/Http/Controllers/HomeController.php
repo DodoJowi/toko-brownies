@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Barang;
-
+use Auth;
+use app\Model\User;
 class HomeController extends Controller
 {
     /**
@@ -26,5 +27,6 @@ class HomeController extends Controller
     {
         $barangs = Barang::paginate(20);
         return view('home', compact('barangs'));
+       
     }
 }

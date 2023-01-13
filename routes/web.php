@@ -23,19 +23,25 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('admin',function () {
-    return view('adminHome');
-});
+
 
 
 
 Auth::routes();
+Route::group(['middleware' => 'auth'], function(){
+    Route::group(['middleware' => 'check-level:1'], function(){
+        Route::get('admin',function () {
+            return view('adminHome');
+        });
+    });
+    Route::group(['middleware' => 'check-level:0'], function(){
+        Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+        Route::get('pesan/{id}', [App\Http\Controllers\PesanController::class, 'index']);
+        Route::post('pesan/{id}', [App\Http\Controllers\PesanController::class, 'pesan']);
+        Route::get('check-out', [App\Http\Controllers\PesanController::class, 'check_out']);
+        Route::delete('check-out/{id}', [App\Http\Controllers\PesanController::class, 'delete']);
+        Route::get('konfirmasi-check-out', [App\Http\Controllers\PesanController::class, 'konfirmasi']);
+    });
+});
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-
-Route::get('pesan/{id}', [App\Http\Controllers\PesanController::class, 'index']);
-Route::post('pesan/{id}', [App\Http\Controllers\PesanController::class, 'pesan']);
