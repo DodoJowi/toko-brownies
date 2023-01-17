@@ -44,6 +44,7 @@ class PesanController extends Controller
             $pesanan->tanggal = $tanggal;
             $pesanan->status = 0;
             $pesanan->jumlah_harga = 0;
+            $pesanan->code = mt_rand(100, 999);
             $pesanan->save();
         }
         
@@ -88,7 +89,7 @@ class PesanController extends Controller
         {
             $pesanan_details = PesananDetail::where('pesanan_id', $pesanan->id)->get();
 
-        }
+        }  
         
         return view('check-out', compact('pesanan', 'pesanan_details'));
     }
@@ -107,11 +108,23 @@ class PesanController extends Controller
 
     public function konfirmasi()
     {
+
+        $user = User::where('id',Auth::user()->id)->first();
+
+        if (empty($user->alamat)) {
+            alert()->Error('Identitas Harap Dilengkapi', 'Error');
+            return redirect ('profile');
+        }
+
+        if (empty($user->nohp)) {
+            alert()->Error('Identitas Harap Dilengkapi', 'Error');
+            return redirect ('profile');
+        }
+
         $pesanan = Pesanan::where('user_id', Auth::user()->id)->where('status',0)->first();
         $pesanan_id = $pesanan->id;
         $pesanan->status = 1;
         $pesanan->update();
-
         $pesanan_details = PesananDetail::where('pesanan_id', $pesanan_id)->get();
         foreach ($pesanan_details as $pesanan_detail) {
             $barang = Barang::where('id', $pesanan_detail->barang_id)->first();
@@ -119,7 +132,7 @@ class PesanController extends Controller
             $barang->update();
         }
 
-        alert()->success('Pesanan Sukses Check Out', 'Success');
-        return redirect ('check-out');
+        alert()->success('Pesanan Sukses Check Out Silahkan Lanjutkan Proses Pembayaran', 'Success');
+        return redirect('history/'.$pesanan_id);
     }
 }

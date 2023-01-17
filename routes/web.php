@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PesanController;
+use App\Http\Controllers\UploadsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,8 +23,6 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
 
 
 
@@ -33,6 +32,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('admin',function () {
             return view('adminHome');
         });
+        
     });
     Route::group(['middleware' => 'check-level:0'], function(){
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -41,7 +41,18 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('check-out', [App\Http\Controllers\PesanController::class, 'check_out']);
         Route::delete('check-out/{id}', [App\Http\Controllers\PesanController::class, 'delete']);
         Route::get('konfirmasi-check-out', [App\Http\Controllers\PesanController::class, 'konfirmasi']);
+        Route::get('profile', [App\Http\Controllers\ProfileController::class, 'index']);
+        Route::post('profile', [App\Http\Controllers\ProfileController::class, 'update']);
+        Route::get('history', [App\Http\Controllers\HistoryController::class, 'index']);
+        Route::get('history/{id}', [App\Http\Controllers\HistoryController::class, 'detail']);
+        Route::get('upload', [UploadImageController::class, 'index']);
+        Route::post('save', [UploadImageController::class, 'save']);
     });
 });
+Route::get('upload', function(){
+    return view('upload');
+});
+
+Route::post('send', [UploadController::class,'store'])->name('send');
 
 
