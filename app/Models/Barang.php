@@ -9,7 +9,9 @@ class Barang extends Model
 {
     protected $table ='barangs';
     protected $primaryKey = 'id';
-    protected $fillable = array('nama_barang','harga','gambar','stok','keterangan','created_at','updated_at');
+   protected $fillable = [
+    'nama_barang','harga','gambar','stok','keterangan','created_at','updated_at'
+    ];
     
     use HasFactory;
 

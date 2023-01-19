@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PesanController;
-use App\Http\Controllers\UploadsController;
+use App\Http\Controllers\MemekController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,9 +29,7 @@ Auth::routes();
 Auth::routes();
 Route::group(['middleware' => 'auth'], function(){
     Route::group(['middleware' => 'check-level:1'], function(){
-        Route::get('admin',function () {
-            return view('adminHome');
-        });
+        Route::resource('admin', 'MemekController');
         
     });
     Route::group(['middleware' => 'check-level:0'], function(){
@@ -45,14 +43,8 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('profile', [App\Http\Controllers\ProfileController::class, 'update']);
         Route::get('history', [App\Http\Controllers\HistoryController::class, 'index']);
         Route::get('history/{id}', [App\Http\Controllers\HistoryController::class, 'detail']);
-        Route::get('upload', [UploadImageController::class, 'index']);
-        Route::post('save', [UploadImageController::class, 'save']);
     });
 });
-Route::get('upload', function(){
-    return view('upload');
-});
 
-Route::post('send', [UploadController::class,'store'])->name('send');
 
 

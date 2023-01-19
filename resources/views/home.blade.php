@@ -7,7 +7,7 @@
             <img src="{{url('img/logojo.png')}}" width="300" class="gambar rounded d-block mx-auto " alt="">
         </div>
         @foreach($barangs as $barang)
-        <div class="col-md-4 mt-2">
+        <div class="col-md-4 mt-5">
             <div class="card">
                 <img src="{{url('uploads')}}/{{$barang->gambar }}" class="card-img-top" height="220" alt="...">
                 <div class="card-body">

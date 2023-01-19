@@ -37,7 +37,6 @@ class PesanController extends Controller
         }
 
         $cek_pesanan = Pesanan::where('user_id', Auth::user()->id)->where('status',0)->first();
-        // simpan ke database pesanan
         if (empty($cek_pesanan)) {
             $pesanan = new Pesanan;
             $pesanan->user_id = Auth::user()->id;
